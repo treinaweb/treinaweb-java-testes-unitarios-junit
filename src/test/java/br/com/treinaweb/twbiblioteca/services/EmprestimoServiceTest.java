@@ -27,10 +27,55 @@ public class EmprestimoServiceTest {
         var emprestimo = emprestimoService.novo(cliente, List.of(obra));
 
         // verificação
-        assertEquals(emprestimo.getCliente(), cliente);
-        assertEquals(emprestimo.getLivros(), List.of(obra));
-        assertEquals(emprestimo.getDataEmprestimo(), LocalDate.now());
-        assertEquals(emprestimo.getDataDevolucao(), LocalDate.now().plusDays(3));
+        assertEquals(cliente, emprestimo.getCliente());
+        assertEquals(List.of(obra), emprestimo.getLivros());
+        assertEquals(LocalDate.now(), emprestimo.getDataEmprestimo());
+        assertEquals(LocalDate.now().plusDays(3), emprestimo.getDataDevolucao());
+    }
+
+    @Test
+    void quandoMetodoNovoForChamadoComClienteDeReputacaoRuimDeveRetornarUmEmprestimoComDevolucaoParaUmDias() {
+        // cenario
+        var emprestimoService = new EmprestimoService();
+        var cliente = new Cliente(1L, "Cleinte Teste", LocalDate.now(), "123.123.123-11", Reputacao.RUIM);
+        var autor = new Autor(1L, "Autor Teste", LocalDate.now(), null);
+        var obra = new Obra(1L, "Obra Teste", 100, Tipo.LIVRO, autor);
+
+        // execução
+        var emprestimo = emprestimoService.novo(cliente, List.of(obra));
+
+        // verificação
+        assertEquals(LocalDate.now().plusDays(1), emprestimo.getDataDevolucao());
+    }
+
+    @Test
+    void quandoMetodoNovoForChamadoComClienteDeReputacaoRegularDeveRetornarUmEmprestimoComDevolucaoParaTresDias() {
+        // cenario
+        var emprestimoService = new EmprestimoService();
+        var cliente = new Cliente(1L, "Cleinte Teste", LocalDate.now(), "123.123.123-11", Reputacao.REGULAR);
+        var autor = new Autor(1L, "Autor Teste", LocalDate.now(), null);
+        var obra = new Obra(1L, "Obra Teste", 100, Tipo.LIVRO, autor);
+
+        // execução
+        var emprestimo = emprestimoService.novo(cliente, List.of(obra));
+
+        // verificação
+        assertEquals(LocalDate.now().plusDays(3), emprestimo.getDataDevolucao());
+    }
+
+    @Test
+    void quandoMetodoNovoForChamadoComClienteDeReputacaoBoaDeveRetornarUmEmprestimoComDevolucaoParaCincoDias() {
+        // cenario
+        var emprestimoService = new EmprestimoService();
+        var cliente = new Cliente(1L, "Cleinte Teste", LocalDate.now(), "123.123.123-11", Reputacao.BOA);
+        var autor = new Autor(1L, "Autor Teste", LocalDate.now(), null);
+        var obra = new Obra(1L, "Obra Teste", 100, Tipo.LIVRO, autor);
+
+        // execução
+        var emprestimo = emprestimoService.novo(cliente, List.of(obra));
+
+        // verificação
+        assertEquals(LocalDate.now().plusDays(5), emprestimo.getDataDevolucao());
     }
 
 }
