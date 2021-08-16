@@ -1,13 +1,13 @@
 package br.com.treinaweb.twbiblioteca.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +26,9 @@ public class EmprestimoServiceTest {
 
     @Mock
     private EmprestimoDAO emprestimoDAO;
+
+    @Mock
+    private NotificaoService notificaoService;
 
     @InjectMocks
     private EmprestimoService emprestimoService;
@@ -127,10 +130,10 @@ public class EmprestimoServiceTest {
         when(emprestimoDAO.buscarTodos()).thenReturn(emprestimos);
 
         // execução
-        var notificacoes = emprestimoService.notificarAtrasos();
+        emprestimoService.notificarAtrasos();
 
         // verificação
-        assertEquals(1, notificacoes);
+        verify(notificaoService).notificar(emprestimos.get(1));
     }
 
 }
